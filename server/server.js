@@ -1,6 +1,5 @@
 const tokenRoute = require("./routes/token.js");
 const sequelize = require("./config/db");
-const User = require("./models/User");
 
 
 const express = require("express");
@@ -10,8 +9,8 @@ const port = 8080;
 const cors = require("cors");
 const corsOption = {
     origin: [ /// Para permitir apenas de endereços confiavéis.
-        `http://localhost:8080/`,
-        `http://localhost:3030/`
+        `http://localhost:8080`,
+        `http://localhost:3030`
     ], 
 };
 

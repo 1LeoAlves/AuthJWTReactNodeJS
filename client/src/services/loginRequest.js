@@ -1,5 +1,14 @@
-const axios = require("axios");
+import axios from 'axios';
 
-function RequestLogin(){
-    
+async function RequestLogin(email, password) {
+    const pwd = password.trim()
+    const result = await axios.post(`http://localhost:8080/auth/login`, {email, pwd},
+    {
+        headers: { 
+            "Content-Type": "application/json"
+        }
+    });
+    return result.data;
 }
+
+export { RequestLogin };

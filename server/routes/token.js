@@ -1,18 +1,29 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const { getUser } = require("../services/userService");
 
 const express = require("express");
 const router = express.Router();
 let refreshTokens = [];
 
-router.get('/login', (request, response) =>{ // <-- Logar o Usuário
-    const username = "ursula"; // <-- enviar um username no post
-    const acessToken = GenerateAcessToken(username);
-    const refreshToken = jwt.sign(username, process.env.REFRESH_TOKEN_SECRET);
-    response.json({acessToken: acessToken, refreshToken: refreshToken});
+router.post('/login', async (request, response) =>{ // <-- Logar o Usuário
+    const email = request.body.email;
+    const pwd = request.body.pwd;
+    const user = await getUser(email);
+
+    if(user != null){
+        if(user.password !== pwd) return response.sendStatus(401);
+        const acessToken = GenerateAcessToken(email);
+        const refreshToken = jwt.sign(email, process.env.REFRESH_TOKEN_SECRET);
+        response.json({acessToken: acessToken, refreshToken: refreshToken});
+    }
+    else{
+        response.sendStatus(401);
+    }
 });
 
-router.get('/refresh', (request, response) => { // <-- Renovar Token.
+router.post('/refresh', (request, response) => { // <-- Renovar Token.
     const refreshToken = request.body.token;
     if(refreshToken == null) return response.sendStatus(401);
     if(!refreshTokens.includes(refreshToken)) return response.sendStatus(403);
@@ -40,8 +51,8 @@ function AuthToken(request, response, next){
     });
 }
 
-function GenerateAcessToken(username){
-    return jwt.sign({name: username}, process.env.ACESS_TOKEN_SECRET, {expiresIn: 900})
+function GenerateAcessToken(email){
+    return jwt.sign({email: email}, process.env.ACESS_TOKEN_SECRET, {expiresIn: 60})
 }
 
 module.exports = router;
