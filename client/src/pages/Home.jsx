@@ -13,12 +13,13 @@ const Home = () => {
       {/* Header */}
       <header className="bg-[#8B4513] shadow-md p-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-white">Arte em Quadros</h1>
-        <nav>
+        <nav className="flex items-center gap-4">
           <ul className="flex gap-4">
-            <li><Link to="/" className="text-white hover:text-gray-300">Home</Link></li>
+            <li><Link to="/home" className="text-white hover:text-gray-300">Home</Link></li>
             <li><Link to="/sobre" className="text-white hover:text-gray-300">Sobre</Link></li>
             <li><Link to="/contato" className="text-white hover:text-gray-300">Contato</Link></li>
           </ul>
+          <Link to="/login" className="ml-4 bg-white text-[#8B4513] py-2 px-4 rounded hover:bg-gray-200">Login</Link>
         </nav>
       </header>
       
