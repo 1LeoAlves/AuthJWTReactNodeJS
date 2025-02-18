@@ -9,7 +9,7 @@ const port = 8080;
 const cors = require("cors");
 const corsOption = {
     origin: [ /// Para permitir apenas de endereços confiavéis.
-        `http://localhost:8080`,
+        `http://localhost:8080`, 
         `http://localhost:3030`
     ], 
 };

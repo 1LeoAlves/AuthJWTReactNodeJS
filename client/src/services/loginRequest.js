@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 async function RequestLogin(email, password) {
-    const pwd = password.trim()
+    const pwd = password.trim();
     const result = await axios.post(`http://localhost:8080/auth/login`, {email, pwd},
     {
         headers: { 

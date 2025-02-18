@@ -18,6 +18,11 @@ const User = sequelize.define("User", {
     password: {
         type: DataTypes.STRING(16),  // Define o tamanho máximo como 16
         allowNull: false
+    },
+    refreshtoken: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
     }
 }, {
     tableName: "users",  // Garante que a tabela será criada como `users`

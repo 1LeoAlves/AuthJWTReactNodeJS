@@ -5,7 +5,6 @@ const { getUser } = require("../services/userService");
 
 const express = require("express");
 const router = express.Router();
-let refreshTokens = [];
 
 router.post('/login', async (request, response) =>{ // <-- Logar o Usuário
     const email = request.body.email;
@@ -14,8 +13,8 @@ router.post('/login', async (request, response) =>{ // <-- Logar o Usuário
 
     if(user != null){
         if(user.password !== pwd) return response.sendStatus(401);
-        const acessToken = GenerateAcessToken(email);
-        const refreshToken = jwt.sign(email, process.env.REFRESH_TOKEN_SECRET);
+        const acessToken = GenerateAccessToken(user.email);
+        const refreshToken = GenerateRefreshToken(user.email);
         response.json({acessToken: acessToken, refreshToken: refreshToken});
     }
     else{
@@ -24,13 +23,13 @@ router.post('/login', async (request, response) =>{ // <-- Logar o Usuário
 });
 
 router.post('/refresh', (request, response) => { // <-- Renovar Token.
-    const refreshToken = request.body.token;
+    const refreshToken = request.body.reTkn;
     if(refreshToken == null) return response.sendStatus(401);
-    if(!refreshTokens.includes(refreshToken)) return response.sendStatus(403);
+
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
         if(error) return response.sendStatus(403);
-        const acessToken = GenerateAcessToken({name: user.name});
-        return response.json({acessToken: acessToken});
+        const tkn = GenerateAccessToken(user.name);
+        return response.json({accessToken: tkn});
     });
 })
 
@@ -51,8 +50,12 @@ function AuthToken(request, response, next){
     });
 }
 
-function GenerateAcessToken(email){
-    return jwt.sign({email: email}, process.env.ACESS_TOKEN_SECRET, {expiresIn: 60})
+function GenerateAccessToken(email) {
+    return jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1m' }); 
+}
+
+function GenerateRefreshToken(email) {
+    return jwt.sign({ email: email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 }
 
 module.exports = router;
